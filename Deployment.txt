@@ -1,0 +1,129 @@
+Starting Fortunity NXT Diamond deployment...
+Deploying contracts with account: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+Account balance: 10000.0
+
+=== Deploying Facets ===
+AdminFacet deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+RegistrationFacet deployed to: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+PurchaseFacet deployed to: 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
+MatrixFacet deployed to: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+LevelIncomeFacet deployed to: 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
+PoolIncomeFacet deployed to: 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
+
+=== Getting Function Selectors ===
+
+AdminFacet Functions (16):
+  emergencyWithdraw: 0x5312ea8e
+  getLevelRequirement: 0x358a7fa2
+  getPoolDistributionDays: 0x2086a59a
+  getRoleMember: 0x9010d07c
+  getRoleMemberCount: 0xca15c873
+  getRoleMembers: 0xa3246ad3
+  getSlotInfo: 0xbe20f9ac
+  getTreasury: 0x3b19e84a
+  grantAdminRole: 0xc634b78e
+  initializeAdminFacet: 0xe2ee1813
+  revokeAdminRole: 0x9a19c7b0
+  setPoolDistributionDays: 0x8b930d1d
+  setSlotActive: 0x1deb957d
+  setTreasury: 0xf0f44260
+  updateLevelRequirement: 0xf06ef3cd
+  updateSlot: 0xcbd7b19e
+
+RegistrationFacet Functions (1):
+  register: 0x4420e486
+
+PurchaseFacet Functions (1):
+  purchaseSlot: 0x04c60eae
+
+MatrixFacet Functions (1):
+  processMatrixPlacement: 0x6686ff1d
+
+LevelIncomeFacet Functions (1):
+  processLevelIncome: 0x9fa71d5a
+
+PoolIncomeFacet Functions (1):
+  distributePoolIncome: 0x8808504b
+
+✅ No duplicate selectors found
+
+Selector Summary:
+- AdminFacet: 16
+- RegistrationFacet: 1
+- PurchaseFacet: 1
+- MatrixFacet: 1
+- LevelIncomeFacet: 1
+- PoolIncomeFacet: 1
+- Total: 21
+
+=== Preparing Diamond Cut ===
+Diamond cut prepared with 6 facets
+
+=== Deploying Diamond ===
+FortuneNXTDiamond deployed to: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+=== Initializing System ===
+✅ AdminFacet initialized successfully
+✅ Treasury set successfully
+
+=== Configuring Initial Slots ===
+✅ Slot 1 configured: 0.01 ETH
+✅ Slot 2 configured: 0.02 ETH
+✅ Slot 3 configured: 0.04 ETH
+✅ Slot 4 configured: 0.08 ETH
+✅ Slot 5 configured: 0.16 ETH
+✅ Slot 6 configured: 0.32 ETH
+✅ Slot 7 configured: 0.64 ETH
+✅ Slot 8 configured: 1.28 ETH
+✅ Slot 9 configured: 2.56 ETH
+✅ Slot 10 configured: 5.12 ETH
+✅ Slot 11 configured: 10.24 ETH
+✅ Slot 12 configured: 20.48 ETH
+
+=== Configuring Level Requirements ===
+✅ Level 1 configured: 1 direct, 10%
+✅ Level 2 configured: 2 direct, 8%
+✅ Level 3 configured: 3 direct, 6%
+✅ Level 4 configured: 4 direct, 4%
+✅ Level 5 configured: 5 direct, 2%
+
+=== Deployment Verification ===
+Number of facets: 6
+Facet addresses: Result(6) [
+  '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+  '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
+  '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
+  '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9',
+  '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
+  '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707'
+]
+✅ Treasury address: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+✅ Slot 1 info: { price: '0.01', poolPercent: '10', active: true }
+
+=== Deployment Summary ===
+Diamond Address: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+Facet Addresses:
+- AdminFacet: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+- RegistrationFacet: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+- PurchaseFacet: 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
+- MatrixFacet: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+- LevelIncomeFacet: 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
+- PoolIncomeFacet: 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
+
+=== Deployment Complete ===
+Save this deployment info for frontend integration:
+{
+  "network": "hardhat",
+  "diamond": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+  "facets": {
+    "AdminFacet": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    "RegistrationFacet": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+    "PurchaseFacet": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+    "MatrixFacet": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+    "LevelIncomeFacet": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+    "PoolIncomeFacet": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+  },
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "deployedAt": "2025-05-30T10:16:36.682Z"
+}

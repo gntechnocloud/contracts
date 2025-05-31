@@ -1,0 +1,127 @@
+ npx hardhat run scripts/deploy-fortunity-nxt.js --network hardhat
+Starting Fortunity NXT Diamond deployment...
+Deploying contracts with account: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+Account balance: 10000.0
+
+=== Deploying Facets ===
+AdminFacet deployed to: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+RegistrationFacet deployed to: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+PurchaseFacet deployed to: 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
+MatrixFacet deployed to: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+LevelIncomeFacet deployed to: 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
+PoolIncomeFacet deployed to: 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
+
+=== Getting Function Selectors ===
+
+AdminFacet Functions (13):
+  emergencyWithdraw: 0x5312ea8e
+  getLevelRequirement: 0x358a7fa2
+  getPoolDistributionDays: 0x2086a59a
+  getSlotInfo: 0xbe20f9ac
+  getTreasury: 0x3b19e84a
+  grantAdminRole: 0xc634b78e
+  initializeAdminFacet: 0xe2ee1813
+  revokeAdminRole: 0x9a19c7b0
+  setPoolDistributionDays: 0x8b930d1d
+  setSlotActive: 0x1deb957d
+  setTreasury: 0xf0f44260
+  updateLevelRequirement: 0xf06ef3cd
+  updateSlot: 0xcbd7b19e
+
+RegistrationFacet Functions (1):
+  register: 0x4420e486
+
+PurchaseFacet Functions (1):
+  purchaseSlot: 0x04c60eae
+
+MatrixFacet Functions (1):
+  processMatrixPlacement: 0x6686ff1d
+
+LevelIncomeFacet Functions (1):
+  processLevelIncome: 0x9fa71d5a
+
+PoolIncomeFacet Functions (1):
+  distributePoolIncome: 0x8808504b
+
+✅ No duplicate selectors found
+
+Selector Summary:
+- AdminFacet: 13
+- RegistrationFacet: 1
+- PurchaseFacet: 1
+- MatrixFacet: 1
+- LevelIncomeFacet: 1
+- PoolIncomeFacet: 1
+- Total: 18
+
+=== Preparing Diamond Cut ===
+Diamond cut prepared with 6 facets
+
+=== Deploying Diamond ===
+FortuneNXTDiamond deployed to: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+=== Initializing System ===
+❌ AdminFacet initialization failed: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0x0000000000000000000000000000000000000000000000000000000000000000")'
+❌ Treasury setting failed: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+
+=== Configuring Initial Slots ===
+❌ Failed to configure slot 1: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure slot 2: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure slot 3: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure slot 4: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure slot 5: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure slot 6: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure slot 7: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure slot 8: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure slot 9: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure slot 10: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure slot 11: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure slot 12: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+
+=== Configuring Level Requirements ===
+❌ Failed to configure level 1: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure level 2: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure level 3: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure level 4: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+❌ Failed to configure level 5: VM Exception while processing transaction: reverted with custom error 'AccessControlUnauthorizedAccount("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", "0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775")'
+
+=== Deployment Verification ===
+Number of facets: 6
+Facet addresses: Result(6) [
+  '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+  '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
+  '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
+  '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9',
+  '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
+  '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707'
+]
+✅ Treasury address: 0x0000000000000000000000000000000000000000
+✅ Slot 1 info: { price: '0.0', poolPercent: '0', active: false }
+
+=== Deployment Summary ===
+Diamond Address: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+Facet Addresses:
+- AdminFacet: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+- RegistrationFacet: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+- PurchaseFacet: 0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0
+- MatrixFacet: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+- LevelIncomeFacet: 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
+- PoolIncomeFacet: 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
+
+=== Deployment Complete ===
+Save this deployment info for frontend integration:
+{
+  "network": "hardhat",
+  "diamond": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+  "facets": {
+    "AdminFacet": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    "RegistrationFacet": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+    "PurchaseFacet": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+    "MatrixFacet": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+    "LevelIncomeFacet": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+    "PoolIncomeFacet": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"
+  },
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "deployedAt": "2025-05-30T09:42:58.181Z"
+}
