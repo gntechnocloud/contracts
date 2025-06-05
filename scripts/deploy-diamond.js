@@ -1,4 +1,5 @@
 const { ethers } = require("hardhat");
+const AddressZero = "0x0000000000000000000000000000000000000000";
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -33,7 +34,7 @@ async function main() {
     "RegistrationFacet",
     "LevelIncomeFacet",
     "MatrixFacet",
-    "MagicPoolFacet",
+    "MagicPoolFacet"
   ];
 
   const facetAddresses = {};
@@ -74,7 +75,7 @@ async function main() {
 
   // 6. Execute diamond cut to add facets
   const diamondCutFacetContract = await ethers.getContractAt("IDiamondCut", diamond.target, deployer);
-  const tx = await diamondCutFacetContract.diamondCut(diamondCut, ethers.constants.AddressZero, "0x");
+  const tx = await diamondCutFacetContract.diamondCut(diamondCut, AddressZero, "0x");
   console.log("Diamond cut tx submitted:", tx.hash);
   const receipt = await tx.wait();
   if (!receipt.status) {
