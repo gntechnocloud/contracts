@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import "./IPriceFeed.sol";
+
 contract FortuneNXTStorage {
     uint256 public constant ADMIN_FEE_PERCENT = 3;
     uint256 public constant MATRIX_INCOME_PERCENT = 75;
@@ -10,7 +12,7 @@ contract FortuneNXTStorage {
     uint256 public constant MAX_PAYOUT_TIME = 90 days;
 
     struct Slot {
-        uint256 price;
+        uint256 price; // base price in USD or Core Coin units (depending on your logic)
         uint256 poolPercent;
         bool active;
     }
@@ -59,5 +61,9 @@ contract FortuneNXTStorage {
     uint256 public lastPoolDistributionTime;
     uint256 public version;
 
-    uint256[50] private __gap;
+    // New addition: Price feed contract address
+    IPriceFeed public priceFeed;
+
+    // Gap for upgradeability
+    uint256[49] private __gap;
 }
