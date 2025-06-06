@@ -1,18 +1,84 @@
-# Sample Hardhat Project
+#Fortunity NXT Smart Contracts
+This repository contains the Solidity smart contracts and deployment scripts for Fortunity NXT, a crypto-based Semi-DAPP MLM platform using a 2x2 Forced Matrix MLM structure. The system includes Matrix Income, Level Income, Pool Income, and automatic Rebirth logic. Users buy progressive slots, each with its own earning and re-entry rules. A 3% admin fee applies to all payouts (not rebirth). Pool Income is distributed on the 5th, 15th, and 25th, among 12 slot sub-pools. The platform uses a Diamond (EIP-2535) proxy pattern for modular upgradeability.
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
+Table of Contents
+Project Overview
+Architecture
+Contracts
+Deployment
+Usage
+Testing
+Contributing
+License
+Project Overview
+Fortunity NXT is a decentralized MLM platform built on Ethereum-compatible blockchains. It uses a Diamond Proxy pattern to enable modular and upgradeable smart contracts. The MLM logic is implemented through multiple facets, each handling a specific part of the system such as registration, purchase, income distribution, matrix management, and price feeds.
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
+Architecture
+Diamond Proxy (FortuneNXTDiamond.sol): The main contract that delegates calls to various facets.
+Facets: Modular contracts implementing specific features.
+LibDiamond.sol: Library managing diamond storage and ownership.
+IDiamondCut.sol: Interface defining diamond cut functions.
+DiamondCutFacet.sol: Facet implementing diamond cut functionality.
+AdminFacet.sol: Admin functions including price feed management.
+PurchaseFacet.sol: Handles slot purchases and rebirth logic.
+PriceFeedFacet.sol: Integrates Chainlink oracles for price feeds.
+RegistrationFacet.sol: User registration and referral management.
+LevelIncomeFacet.sol: Level income distribution logic.
+MatrixFacet.sol: Forced matrix MLM logic.
+MagicPoolFacet.sol: Pool income distribution logic.
+FortuneNXTStorage.sol: Centralized storage struct for diamond facets.
+Contracts
+Contract Name	Description
+FortuneNXTDiamond	Diamond proxy contract managing facets
+DiamondCutFacet	Implements diamond cut (add/replace/remove)
+AdminFacet	Admin controls, price feed setup
+PurchaseFacet	Slot purchase, rebirth, and income logic
+PriceFeedFacet	Price feed integration (Chainlink oracles)
+RegistrationFacet	User registration and referral system
+LevelIncomeFacet	Level income distribution
+MatrixFacet	Forced matrix MLM logic
+MagicPoolFacet	Pool income distribution
+LibDiamond	Diamond storage and ownership library
+IDiamondCut	Diamond cut interface
+FortuneNXTStorage	Shared storage struct for facets
+Deployment
+Prerequisites
+Node.js >= 16.x
+Hardhat
+Local Ethereum node or testnet access
+@nomicfoundation/hardhat-toolbox installed
+Steps
+Compile contracts:
+bash
+Copy Code
+npx hardhat compile
+Start local node (optional):
+bash
+Copy Code
 npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.ts
-```
-
-Note :- First 9 Closing No Direct Required.
-Then Next 9 Closing Require 1 Direct of Same Slot (1X of Business, This Can Be from Multiple Referral of Lower Slots as well, his Total Referral Business After 90 Days must be equal to His Max Slot Value.) as User It Self, If Direct Refferal Is Lower Then Self Slot then Will Get Magic Pool Income of the Referred Person Max Slot Level. For Example If Person P0 is at Slot 5 and He Referrs a Person P1 oF Slot 3 then P0 Will Get Magic Pool Income From Slot 1 to Slot 3 Only.
-
-After 180 Days, Requires 2X Referral Business in Total From his Max Slot's Price.
+Deploy contracts:
+bash
+Copy Code
+npx hardhat run ./scripts/deploy-diamond.js --network localhost
+The deploy script will:
+Deploy DiamondCutFacet
+Deploy the diamond proxy contract with initial cut
+Deploy all other facets
+Perform diamond cut to add facets to diamond
+Set price feed address in admin facet
+Usage
+Connect your frontend DApp to the deployed diamond contract address.
+Interact with facets via the diamond proxy.
+Use the ABI files of facets you want to interact with.
+Wallet connection and Web3 provider integration required.
+Testing
+Unit tests can be added using Hardhat test framework.
+Use npx hardhat test to run tests.
+Test deployment and diamond cut on local or testnet before mainnet.
+Contributing
+Fork the repository.
+Create feature branches.
+Submit pull requests with detailed descriptions.
+Follow Solidity best practices and security guidelines.
+License
+This project is licensed under the MIT License.
