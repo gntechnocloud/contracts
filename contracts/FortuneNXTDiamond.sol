@@ -17,7 +17,10 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
 
     // Events
     event DiamondCut(FacetCut[] _diamondCut, address _init, bytes _calldata);
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     // Structs
     struct Facet {
@@ -48,7 +51,7 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
     constructor(FacetCut[] memory _newDiamondCut) {
         owner = msg.sender;
         emit OwnershipTransferred(address(0), msg.sender);
-        
+
         _diamondCut(_newDiamondCut, address(0), "");
     }
 
@@ -58,14 +61,18 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
     fallback() external payable {
         address facet = selectorToFacetAddress[msg.sig];
         require(facet != address(0), "Diamond: Function does not exist");
-        
+
         assembly {
             calldatacopy(0, 0, calldatasize())
             let result := delegatecall(gas(), facet, 0, calldatasize(), 0, 0)
             returndatacopy(0, 0, returndatasize())
             switch result
-            case 0 { revert(0, returndatasize()) }
-            default { return(0, returndatasize()) }
+            case 0 {
+                revert(0, returndatasize())
+            }
+            default {
+                return(0, returndatasize())
+            }
         }
     }
 
@@ -102,7 +109,7 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
     ) internal {
         for (uint256 i = 0; i < diamondCutData.length; i++) {
             FacetCut memory cut = diamondCutData[i];
-            
+
             if (cut.action == ADD) {
                 _addFunctions(cut.facetAddress, cut.functionSelectors);
             } else if (cut.action == REPLACE) {
@@ -113,12 +120,13 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
                 revert("Diamond: Invalid action");
             }
         }
-        
+
         emit DiamondCut(diamondCutData, _init, _calldata);
-        
+
         if (_init != address(0)) {
             if (_calldata.length > 0) {
-                _init.functionDelegateCall(_calldata);
+                // _init.functionDelegateCall(_calldata);
+                Address.functionDelegateCall(_init, _calldata);
             } else {
                 _init.functionDelegateCall(abi.encodeWithSignature("init()"));
             }
@@ -130,21 +138,30 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
      * @param _facetAddress Address of the facet
      * @param _functionSelectors Array of function selectors to add
      */
-    function _addFunctions(address _facetAddress, bytes4[] memory _functionSelectors) internal {
+    function _addFunctions(
+        address _facetAddress,
+        bytes4[] memory _functionSelectors
+    ) internal {
         require(_facetAddress != address(0), "Diamond: Invalid facet address");
-        require(_functionSelectors.length > 0, "Diamond: No selectors provided");
-        
+        require(
+            _functionSelectors.length > 0,
+            "Diamond: No selectors provided"
+        );
+
         Facet storage facet = _facets[_facetAddress];
-        
+
         if (facet.facetAddress == address(0)) {
             _facetAddresses.push(_facetAddress);
             facet.facetAddress = _facetAddress;
         }
-        
+
         for (uint256 i = 0; i < _functionSelectors.length; i++) {
             bytes4 selector = _functionSelectors[i];
-            require(selectorToFacetAddress[selector] == address(0), "Diamond: Function already exists");
-            
+            require(
+                selectorToFacetAddress[selector] == address(0),
+                "Diamond: Function already exists"
+            );
+
             // Cast bytes4 to bytes32 when adding to the set
             facet.functionSelectors.add(bytes32(selector));
             selectorToFacetAddress[selector] = _facetAddress;
@@ -156,28 +173,42 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
      * @param _facetAddress Address of the facet
      * @param _functionSelectors Array of function selectors to replace
      */
-    function _replaceFunctions(address _facetAddress, bytes4[] memory _functionSelectors) internal {
+    function _replaceFunctions(
+        address _facetAddress,
+        bytes4[] memory _functionSelectors
+    ) internal {
         require(_facetAddress != address(0), "Diamond: Invalid facet address");
-        require(_functionSelectors.length > 0, "Diamond: No selectors provided");
-        
+        require(
+            _functionSelectors.length > 0,
+            "Diamond: No selectors provided"
+        );
+
         for (uint256 i = 0; i < _functionSelectors.length; i++) {
             bytes4 selector = _functionSelectors[i];
             address oldFacetAddress = selectorToFacetAddress[selector];
-            
-            require(oldFacetAddress != address(0), "Diamond: Function does not exist");
-            require(oldFacetAddress != _facetAddress, "Diamond: Cannot replace with same facet");
-            
+
+            require(
+                oldFacetAddress != address(0),
+                "Diamond: Function does not exist"
+            );
+            require(
+                oldFacetAddress != _facetAddress,
+                "Diamond: Cannot replace with same facet"
+            );
+
             // Remove from old facet - cast bytes4 to bytes32
-            _facets[oldFacetAddress].functionSelectors.remove(bytes32(selector));
-            
+            _facets[oldFacetAddress].functionSelectors.remove(
+                bytes32(selector)
+            );
+
             // Add to new facet
             Facet storage facet = _facets[_facetAddress];
-            
+
             if (facet.facetAddress == address(0)) {
                 _facetAddresses.push(_facetAddress);
                 facet.facetAddress = _facetAddress;
             }
-            
+
             // Cast bytes4 to bytes32 when adding to the set
             facet.functionSelectors.add(bytes32(selector));
             selectorToFacetAddress[selector] = _facetAddress;
@@ -189,31 +220,44 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
      * @param _facetAddress Address of the facet (not used, just for consistency)
      * @param _functionSelectors Array of function selectors to remove
      */
-    function _removeFunctions(address _facetAddress, bytes4[] memory _functionSelectors) internal {
-        require(_functionSelectors.length > 0, "Diamond: No selectors provided");
-        
+    function _removeFunctions(
+        address _facetAddress,
+        bytes4[] memory _functionSelectors
+    ) internal {
+        require(
+            _functionSelectors.length > 0,
+            "Diamond: No selectors provided"
+        );
+
         for (uint256 i = 0; i < _functionSelectors.length; i++) {
             bytes4 selector = _functionSelectors[i];
             address currentFacetAddress = selectorToFacetAddress[selector];
-            
-            require(currentFacetAddress != address(0), "Diamond: Function does not exist");
-            
+
+            require(
+                currentFacetAddress != address(0),
+                "Diamond: Function does not exist"
+            );
+
             // Remove from facet - cast bytes4 to bytes32
-            _facets[currentFacetAddress].functionSelectors.remove(bytes32(selector));
-            
+            _facets[currentFacetAddress].functionSelectors.remove(
+                bytes32(selector)
+            );
+
             // Remove from selector mapping
             delete selectorToFacetAddress[selector];
-            
+
             // If facet has no more functions, remove it from _facetAddresses
             if (_facets[currentFacetAddress].functionSelectors.length() == 0) {
                 for (uint256 j = 0; j < _facetAddresses.length; j++) {
                     if (_facetAddresses[j] == currentFacetAddress) {
-                        _facetAddresses[j] = _facetAddresses[_facetAddresses.length - 1];
+                        _facetAddresses[j] = _facetAddresses[
+                            _facetAddresses.length - 1
+                        ];
                         _facetAddresses.pop();
                         break;
                     }
                 }
-                
+
                 delete _facets[currentFacetAddress];
             }
         }
@@ -223,7 +267,11 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
      * @dev Gets all facet addresses.
      * @return facetAddresses_ Array of facet addresses
      */
-    function facetAddresses() external view returns (address[] memory facetAddresses_) {
+    function facetAddresses()
+        external
+        view
+        returns (address[] memory facetAddresses_)
+    {
         return _facetAddresses;
     }
 
@@ -232,16 +280,18 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
      * @param _facet Address of the facet
      * @return selectors Array of function selectors
      */
-    function facetFunctionSelectors(address _facet) external view returns (bytes4[] memory) {
+    function facetFunctionSelectors(
+        address _facet
+    ) external view returns (bytes4[] memory) {
         Facet storage facet = _facets[_facet];
         uint256 selectorCount = facet.functionSelectors.length();
         bytes4[] memory selectors = new bytes4[](selectorCount);
-        
+
         for (uint256 i = 0; i < selectorCount; i++) {
             // Cast bytes32 back to bytes4 when reading from the set
             selectors[i] = bytes4(facet.functionSelectors.at(i));
         }
-        
+
         return selectors;
     }
 
@@ -250,7 +300,9 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
      * @param _functionSelector Function selector
      * @return facetAddress_ Address of the facet
      */
-    function facetAddress(bytes4 _functionSelector) external view returns (address facetAddress_) {
+    function facetAddress(
+        bytes4 _functionSelector
+    ) external view returns (address facetAddress_) {
         return selectorToFacetAddress[_functionSelector];
     }
 
@@ -261,10 +313,10 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
     function transferOwnership(address _newOwner) external {
         require(msg.sender == owner, "Diamond: Not authorized");
         require(_newOwner != address(0), "New owner cannot be zero address");
-        
+
         address previousOwner = owner;
         owner = _newOwner;
-        
+
         emit OwnershipTransferred(previousOwner, _newOwner);
     }
 
@@ -281,7 +333,9 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
      * @param _functionSelector The function selector to check
      * @return exists True if the function exists
      */
-    function functionExists(bytes4 _functionSelector) external view returns (bool exists) {
+    function functionExists(
+        bytes4 _functionSelector
+    ) external view returns (bool exists) {
         return selectorToFacetAddress[_functionSelector] != address(0);
     }
 
@@ -292,19 +346,19 @@ contract FortuneNXTDiamond is FortuneNXTStorage {
     function facets() external view returns (FacetInfo[] memory facets_) {
         uint256 facetCount = _facetAddresses.length;
         facets_ = new FacetInfo[](facetCount);
-        
+
         for (uint256 i = 0; i < facetCount; i++) {
             address facetAddr = _facetAddresses[i];
             Facet storage facet = _facets[facetAddr];
-            
+
             uint256 selectorCount = facet.functionSelectors.length();
             bytes4[] memory selectors = new bytes4[](selectorCount);
-            
+
             for (uint256 j = 0; j < selectorCount; j++) {
                 // Cast bytes32 back to bytes4 when reading from the set
                 selectors[j] = bytes4(facet.functionSelectors.at(j));
             }
-            
+
             facets_[i] = FacetInfo({
                 facetAddress: facetAddr,
                 functionSelectors: selectors

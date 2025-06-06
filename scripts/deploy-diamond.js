@@ -1,111 +1,79 @@
-const { ethers } = require("hardhat");
-const AddressZero = "0x0000000000000000000000000000000000000000";
+// scripts/deploy-diamond.js
+const hre = require("hardhat");
+const { getSelectors } = require("../contracts/utils/diamond-helpers");
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
+  const [deployer] = await hre.ethers.getSigners();
   console.log("Deploying contracts with:", deployer.address);
 
   // 1. Deploy DiamondCutFacet
-  const DiamondCutFacetFactory = await ethers.getContractFactory("DiamondCutFacet");
-  const diamondCutFacet = await DiamondCutFacetFactory.deploy();
+  const DiamondCutFacet = await hre.ethers.getContractFactory("DiamondCutFacet");
+  const diamondCutFacet = await DiamondCutFacet.deploy();
   await diamondCutFacet.waitForDeployment();
-  console.log("DiamondCutFacet deployed at:", diamondCutFacet.target);
+  console.log("DiamondCutFacet deployed at:", await diamondCutFacet.getAddress());
 
-  // Prepare initial diamond cut array with DiamondCutFacet
-  const initialCut = [
-    {
-      facetAddress: diamondCutFacet.target,
-      action: 0, // Add
-      functionSelectors: getSelectors(DiamondCutFacetFactory.interface),
-    },
-  ];
-
-  // 2. Deploy Diamond with initial cut
-  const FortuneNXTDiamondFactory = await ethers.getContractFactory("FortuneNXTDiamond");
-  const diamond = await FortuneNXTDiamondFactory.deploy(initialCut);
+  // 2. Deploy FortuneNXTDiamond with empty cut
+  const FortuneNXTDiamond = await hre.ethers.getContractFactory("FortuneNXTDiamond");
+  const diamond = await FortuneNXTDiamond.deploy([]);
   await diamond.waitForDeployment();
-  console.log("Diamond deployed at:", diamond.target);
+  const diamondAddress = await diamond.getAddress();
+  console.log("FortuneNXTDiamond deployed at:", diamondAddress);
 
-  // 3. Deploy other facets
-  const facetsToDeploy = [
+  // 3. Define facets to deploy and add
+  const facetNames = [
     "AdminFacet",
-    "PurchaseFacet",
-    "PriceFeedFacet",
-    "RegistrationFacet",
+    "MagicPoolFacet",
+    "MatrixFacet",   
     "LevelIncomeFacet",
-    "MatrixFacet",
-    "MagicPoolFacet"
+    "PriceFeedFacet",
+    "PurchaseFacet",
+    "RegistrationFacet",
+    // Add more facet names if needed
   ];
 
-  const facetAddresses = {};
-  const facetInterfaces = {};
+  const FacetCutActions = { Add: 0, Replace: 1, Remove: 2 };
+const diamondCuts = [];
 
-  for (const facetName of facetsToDeploy) {
-    const FacetFactory = await ethers.getContractFactory(facetName);
-    const facet = await FacetFactory.deploy();
-    await facet.waitForDeployment();
-    facetAddresses[facetName] = facet.target;
-    facetInterfaces[facetName] = FacetFactory.interface;
-    console.log(`${facetName} deployed at:`, facet.target);
+const allSelectors = new Set(); // To track unique function selectors
+
+for (const name of facetNames) {
+  const Facet = await hre.ethers.getContractFactory(name);
+  const facet = await Facet.deploy();
+  await facet.waitForDeployment();
+  const facetAddress = await facet.getAddress();
+  console.log(`${name} deployed at:`, facetAddress);
+
+  let selectors = getSelectors(facet);
+
+  // Filter out selectors that are already added
+  selectors = selectors.filter((selector) => !allSelectors.has(selector));
+  selectors.forEach((s) => allSelectors.add(s));
+
+  if (selectors.length === 0) {
+    console.log(`⚠️  Skipping ${name} — no new selectors`);
+    continue;
   }
 
-  // 4. Prepare diamond cut for additional facets
-  const diamondCut = [];
-  const FacetCutAction = { Add: 0, Replace: 1, Remove: 2 };
-
-  for (const facetName of facetsToDeploy) {
-    const facetAddress = facetAddresses[facetName];
-    const functionSelectors = getSelectors(facetInterfaces[facetName]);
-    diamondCut.push({
-      facetAddress,
-      action: FacetCutAction.Add,
-      functionSelectors,
-    });
-  }
-
-  // 5. Verify diamond owner before diamondCut
-  const diamondContract = await ethers.getContractAt("FortuneNXTDiamond", diamond.target, deployer);
-  const owner = await diamondContract.getOwner();
-  console.log("Diamond owner:", owner);
-  console.log("Deployer address:", deployer.address);
-
-  if (owner.toLowerCase() !== deployer.address.toLowerCase()) {
-    throw new Error("Deployer is not the owner of the diamond. Cannot perform diamondCut.");
-  }
-
-  // 6. Execute diamond cut to add facets
-  const diamondCutFacetContract = await ethers.getContractAt("IDiamondCut", diamond.target, deployer);
-  const tx = await diamondCutFacetContract.diamondCut(diamondCut, AddressZero, "0x");
-  console.log("Diamond cut tx submitted:", tx.hash);
-  const receipt = await tx.wait();
-  if (!receipt.status) {
-    throw new Error(`Diamond cut failed: ${tx.hash}`);
-  }
-  console.log("Diamond cut completed");
-
-  // 7. Set price feed address via AdminFacet
-  const adminFacet = await ethers.getContractAt("AdminFacet", diamond.target, deployer);
-  const tx2 = await adminFacet.setPriceFeed(facetAddresses["PriceFeedFacet"]);
-  await tx2.wait();
-  console.log("Price feed address set in diamond storage");
-
-  console.log("Deployment and setup complete");
-}
-
-// Helper function to get function selectors from facet interface
-function getSelectors(contractInterface) {
-  const selectors = [];
-  for (const fragment of contractInterface.fragments) {
-    if (fragment.type === "function") {
-      selectors.push(fragment.selector);
-    }
-  }
-  return selectors;
-}
-
-main()
-  .then(() => process.exit(0))
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
+  diamondCuts.push({
+    facetAddress,
+    action: FacetCutActions.Add,
+    functionSelectors: selectors,
   });
+}
+
+
+  // 4. Perform diamond cut
+  const diamondWithCut = await hre.ethers.getContractAt("FortuneNXTDiamond", diamondAddress);
+  const tx = await diamondWithCut.diamondCut(
+    diamondCuts,
+    hre.ethers.ZeroAddress, // No _init address
+    "0x" // No _calldata
+  );
+  await tx.wait();
+  console.log("✅ Diamond cut completed with all facets integrated.");
+}
+
+main().catch((error) => {
+  console.error("❌ Deployment failed:", error);
+  process.exitCode = 1;
+});
