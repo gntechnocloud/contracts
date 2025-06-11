@@ -1,4 +1,3 @@
-
 # Fortunity NXT Smart Contracts
 
 This repository contains the Solidity smart contracts and deployment scripts for **Fortunity NXT**, a crypto-based Semi-DAPP MLM platform using a 2x2 Forced Matrix MLM structure. The system includes Matrix Income, Level Income, Pool Income, and automatic Rebirth logic. Users buy progressive slots, each with its own earning and re-entry rules. A 3% admin fee applies to all payouts (not rebirth). Pool Income is distributed on the 5th, 15th, and 25th, among 12 slot sub-pools. The platform uses a Diamond (EIP-2535) proxy pattern for modular upgradeability.
@@ -10,6 +9,9 @@ This repository contains the Solidity smart contracts and deployment scripts for
 - [Project Overview](#project-overview)
 - [Architecture](#architecture)
 - [Contracts](#contracts)
+<!--
+This section of the README provides a link to the "Deployment" section, allowing users to quickly navigate to deployment instructions or related information within the documentation.
+-->
 - [Deployment](#deployment)
 - [Usage](#usage)
 - [Testing](#testing)
@@ -44,20 +46,20 @@ Fortunity NXT is a decentralized MLM platform built on Ethereum-compatible block
 
 ## Contracts
 
-| Contract Name       | Description                                      |
-|---------------------|------------------------------------------------|
-| FortuneNXTDiamond   | Diamond proxy contract managing facets          |
-| DiamondCutFacet     | Implements diamond cut (add/replace/remove)     |
-| AdminFacet          | Admin controls, price feed setup                 |
-| PurchaseFacet       | Slot purchase, rebirth, and income logic        |
-| PriceFeedFacet      | Price feed integration (Chainlink oracles)      |
-| RegistrationFacet   | User registration and referral system            |
-| LevelIncomeFacet    | Level income distribution                        |
-| MatrixFacet         | Forced matrix MLM logic                           |
-| MagicPoolFacet      | Pool income distribution                         |
-| LibDiamond          | Diamond storage and ownership library            |
-| IDiamondCut         | Diamond cut interface                            |
-| FortuneNXTStorage   | Shared storage struct for facets                 |
+| Contract Name     | Description                                 |
+| ----------------- | ------------------------------------------- |
+| FortuneNXTDiamond | Diamond proxy contract managing facets      |
+| DiamondCutFacet   | Implements diamond cut (add/replace/remove) |
+| AdminFacet        | Admin controls, price feed setup            |
+| PurchaseFacet     | Slot purchase, rebirth, and income logic    |
+| PriceFeedFacet    | Price feed integration (Chainlink oracles)  |
+| RegistrationFacet | User registration and referral system       |
+| LevelIncomeFacet  | Level income distribution                   |
+| MatrixFacet       | Forced matrix MLM logic                     |
+| MagicPoolFacet    | Pool income distribution                    |
+| LibDiamond        | Diamond storage and ownership library       |
+| IDiamondCut       | Diamond cut interface                       |
+| FortuneNXTStorage | Shared storage struct for facets            |
 
 ---
 

@@ -33,6 +33,8 @@ contract LevelIncomeFacet is FortuneNXTStorage {
 
                 emit LevelIncomePaid(current, _user, netAmount, _slotNumber, level);
             }
+            
+
             current = users[current].referrer;
         }
     }
