@@ -1,0 +1,548 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import {LibAppStorage, AppStorage} from "../libraries/LibAppStorage.sol";
+
+abstract contract Modifiers {
+    modifier onlyRegistered() {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[msg.sender].exists, "Not a registered user");
+        _;
+    }
+
+    // Add more modifiers as needed, like onlyOwner or admin checks
+
+    modifier onlyOwner() {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(msg.sender == s.owner, "Not the contract owner");
+        _;
+    }
+
+    modifier onlyValidSlot(uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(slot < s.totalSlots, "Invalid slot");
+        _;
+    }
+
+    modifier onlyExistingUser(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User does not exist");
+        _;
+    }
+    modifier onlyRegisteredUser(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered");
+        _;
+    }
+
+    modifier onlyReferrer(address referrer) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[referrer].exists, "Invalid referrer");
+        _;
+    }
+
+    modifier onlyNotRegistered() {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(!s.users[msg.sender].exists, "User already registered");
+        _;
+    }
+
+    modifier onlyValidReferrer(address referrer) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(
+            referrer == address(0) || s.users[referrer].exists,
+            "Invalid referrer"
+        );
+        _;
+    }
+
+    modifier onlyValidRebirth(uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(slot < s.totalSlots, "Invalid slot for rebirth");
+        require(s.users[msg.sender].slotsPurchased[slot], "Slot not purchased");
+        _;
+    }
+
+    modifier onlyValidPurchase(uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(slot < s.totalSlots, "Invalid slot for purchase");
+        require(
+            !s.users[msg.sender].slotsPurchased[slot],
+            "Slot already purchased"
+        );
+        _;
+    }
+
+    modifier onlyValidUser(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User does not exist");
+        _;
+    }
+
+    modifier onlyValidRebirthCount(uint256 count) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(count > 0, "Rebirth count must be greater than zero");
+        _;
+    }
+
+    modifier onlyValidRegistrationTime(uint256 time) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(time > 0, "Invalid registration time");
+        _;
+    }
+
+    modifier onlyValidUserInfo(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        UserInfo storage info = s.users[user];
+        require(info.exists, "User does not exist");
+        _;
+    }
+
+    modifier onlyValidSlotPurchase(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered");
+        require(slot < s.totalSlots, "Invalid slot");
+        require(!s.users[user].slotsPurchased[slot], "Slot already purchased");
+        _;
+    }
+
+    modifier onlyValidRebirth(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered");
+        require(slot < s.totalSlots, "Invalid slot");
+        require(s.users[user].slotsPurchased[slot], "Slot not purchased");
+        _;
+    }
+
+    modifier onlyValidUserRegistration(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(!s.users[user].exists, "User already registered");
+        _;
+    }
+
+    modifier onlyValidSlotForPurchase(uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(slot < s.totalSlots, "Invalid slot for purchase");
+        _;
+    }
+
+    modifier onlyValidSlotForRebirth(uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(slot < s.totalSlots, "Invalid slot for rebirth");
+        _;
+    }
+
+    modifier onlyValidUserForRebirth(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered");
+        require(slot < s.totalSlots, "Invalid slot for rebirth");
+        require(s.users[user].slotsPurchased[slot], "Slot not purchased");
+        _;
+    }
+
+    modifier onlyValidUserForPurchase(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered");
+        require(slot < s.totalSlots, "Invalid slot for purchase");
+        require(!s.users[user].slotsPurchased[slot], "Slot already purchased");
+        _;
+    }
+
+    modifier onlyValidUserForRegistration(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(!s.users[user].exists, "User already registered");
+        _;
+    }
+
+    modifier onlyValidReferrerForRegistration(address referrer) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(
+            referrer == address(0) || s.users[referrer].exists,
+            "Invalid referrer for registration"
+        );
+        _;
+    }
+
+    modifier onlyValidUserForSlot(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered");
+        require(slot < s.totalSlots, "Invalid slot for user");
+        _;
+    }
+
+    modifier onlyValidRebirthForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered");
+        require(slot < s.totalSlots, "Invalid slot for rebirth");
+        require(
+            s.users[user].slotsPurchased[slot],
+            "Slot not purchased by user"
+        );
+        _;
+    }
+
+    modifier onlyValidPurchaseForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered");
+        require(slot < s.totalSlots, "Invalid slot for purchase");
+        require(
+            !s.users[user].slotsPurchased[slot],
+            "Slot already purchased by user"
+        );
+        _;
+    }
+
+    modifier onlyValidRebirthCountForUser(address user, uint256 count) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered");
+        require(count > 0, "Rebirth count must be greater than zero for user");
+        _;
+    }
+
+    modifier onlyValidRegistrationTimeForUser(address user, uint256 time) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered");
+        require(time > 0, "Invalid registration time for user");
+        _;
+    }
+
+    modifier onlyValidUserInfoForUser(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        UserInfo storage info = s.users[user];
+        require(info.exists, "User does not exist for user info");
+        _;
+    }
+
+    modifier onlyValidSlotPurchaseForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for slot purchase");
+        require(slot < s.totalSlots, "Invalid slot for user slot purchase");
+        require(
+            !s.users[user].slotsPurchased[slot],
+            "Slot already purchased by user"
+        );
+        _;
+    }
+
+    modifier onlyValidRebirthForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for rebirth");
+        require(slot < s.totalSlots, "Invalid slot for user rebirth");
+        require(
+            s.users[user].slotsPurchased[slot],
+            "Slot not purchased by user for rebirth"
+        );
+        _;
+    }
+
+    modifier onlyValidUserRegistrationForUser(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(
+            !s.users[user].exists,
+            "User already registered for user registration"
+        );
+        _;
+    }
+
+    modifier onlyValidSlotForPurchaseForUser(uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(slot < s.totalSlots, "Invalid slot for user purchase");
+        _;
+    }
+
+    modifier onlyValidSlotForRebirthForUser(uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(slot < s.totalSlots, "Invalid slot for user rebirth");
+        _;
+    }
+
+    modifier onlyValidUserForRebirthForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for rebirth");
+        require(slot < s.totalSlots, "Invalid slot for user rebirth");
+        require(
+            s.users[user].slotsPurchased[slot],
+            "Slot not purchased by user for rebirth"
+        );
+        _;
+    }
+
+    modifier onlyValidUserForPurchaseForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for purchase");
+        require(slot < s.totalSlots, "Invalid slot for user purchase");
+        require(
+            !s.users[user].slotsPurchased[slot],
+            "Slot already purchased by user for purchase"
+        );
+        _;
+    }
+
+    modifier onlyValidUserForRegistrationForUser(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(
+            !s.users[user].exists,
+            "User already registered for user registration"
+        );
+        _;
+    }
+
+    modifier onlyValidReferrerForRegistrationForUser(address referrer) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(
+            referrer == address(0) || s.users[referrer].exists,
+            "Invalid referrer for user registration"
+        );
+        _;
+    }
+
+    modifier onlyValidUserForSlotForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for slot");
+        require(slot < s.totalSlots, "Invalid slot for user");
+        _;
+    }
+
+    modifier onlyValidRebirthForUserForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for rebirth");
+        require(slot < s.totalSlots, "Invalid slot for user rebirth");
+        require(
+            s.users[user].slotsPurchased[slot],
+            "Slot not purchased by user for rebirth"
+        );
+        _;
+    }
+
+    modifier onlyValidPurchaseForUserForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for purchase");
+        require(slot < s.totalSlots, "Invalid slot for user purchase");
+        require(
+            !s.users[user].slotsPurchased[slot],
+            "Slot already purchased by user for purchase"
+        );
+        _;
+    }
+
+    modifier onlyValidRebirthCountForUserForUser(address user, uint256 count) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for rebirth count");
+        require(count > 0, "Rebirth count must be greater than zero for user");
+        _;
+    }
+
+    modifier onlyValidRegistrationTimeForUserForUser(
+        address user,
+        uint256 time
+    ) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(
+            s.users[user].exists,
+            "User not registered for registration time"
+        );
+        require(time > 0, "Invalid registration time for user");
+        _;
+    }
+
+    modifier onlyValidUserInfoForUserForUser(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        UserInfo storage info = s.users[user];
+        require(info.exists, "User does not exist for user info");
+        _;
+    }
+
+    modifier onlyValidSlotPurchaseForUserForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for slot purchase");
+        require(slot < s.totalSlots, "Invalid slot for user slot purchase");
+        require(
+            !s.users[user].slotsPurchased[slot],
+            "Slot already purchased by user"
+        );
+        _;
+    }
+
+    modifier onlyValidRebirthForUserForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for rebirth");
+        require(slot < s.totalSlots, "Invalid slot for user rebirth");
+        require(
+            s.users[user].slotsPurchased[slot],
+            "Slot not purchased by user for rebirth"
+        );
+        _;
+    }
+
+    modifier onlyValidUserRegistrationForUserForUser(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(
+            !s.users[user].exists,
+            "User already registered for user registration"
+        );
+        _;
+    }
+
+    modifier onlyValidSlotForPurchaseForUserForUser(uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(slot < s.totalSlots, "Invalid slot for user purchase");
+        _;
+    }
+
+    modifier onlyValidSlotForRebirthForUserForUser(uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(slot < s.totalSlots, "Invalid slot for user rebirth");
+        _;
+    }
+
+    modifier onlyValidUserForRebirthForUserForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for rebirth");
+        require(slot < s.totalSlots, "Invalid slot for user rebirth");
+        require(
+            s.users[user].slotsPurchased[slot],
+            "Slot not purchased by user for rebirth"
+        );
+        _;
+    }
+
+    modifier onlyValidUserForPurchaseForUserForUser(
+        address user,
+        uint256 slot
+    ) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for purchase");
+        require(slot < s.totalSlots, "Invalid slot for user purchase");
+        require(
+            !s.users[user].slotsPurchased[slot],
+            "Slot already purchased by user for purchase"
+        );
+        _;
+    }
+
+    modifier onlyValidUserForRegistrationForUserForUser(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(
+            !s.users[user].exists,
+            "User already registered for user registration"
+        );
+        _;
+    }
+
+    modifier onlyValidReferrerForRegistrationForUserForUser(address referrer) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(
+            referrer == address(0) || s.users[referrer].exists,
+            "Invalid referrer for user registration"
+        );
+        _;
+    }
+
+    modifier onlyValidUserForSlotForUserForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for slot");
+        require(slot < s.totalSlots, "Invalid slot for user");
+        _;
+    }
+
+    modifier onlyValidRebirthForUserForUserForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for rebirth");
+        require(slot < s.totalSlots, "Invalid slot for user rebirth");
+        require(
+            s.users[user].slotsPurchased[slot],
+            "Slot not purchased by user for rebirth"
+        );
+        _;
+    }
+
+    modifier onlyValidPurchaseForUserForUserForUser(
+        address user,
+        uint256 slot
+    ) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for purchase");
+        require(slot < s.totalSlots, "Invalid slot for user purchase");
+        require(
+            !s.users[user].slotsPurchased[slot],
+            "Slot already purchased by user for purchase"
+        );
+        _;
+    }
+
+    modifier onlyValidRebirthCountForUserForUserForUser(
+        address user,
+        uint256 count
+    ) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for rebirth count");
+        require(count > 0, "Rebirth count must be greater than zero for user");
+        _;
+    }
+
+    modifier onlyValidRegistrationTimeForUserForUserForUser(
+        address user,
+        uint256 time
+    ) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(
+            s.users[user].exists,
+            "User not registered for registration time"
+        );
+        require(time > 0, "Invalid registration time for user");
+        _;
+    }
+
+    modifier onlyValidUserInfoForUserForUserForUser(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        UserInfo storage info = s.users[user];
+        require(info.exists, "User does not exist for user info");
+        _;
+    }
+
+    modifier onlyValidSlotPurchaseForUserForUserForUser(
+        address user,
+        uint256 slot
+    ) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for slot purchase");
+        require(slot < s.totalSlots, "Invalid slot for user slot purchase");
+        require(
+            !s.users[user].slotsPurchased[slot],
+            "Slot already purchased by user"
+        );
+        _;
+    }
+
+    modifier onlyValidRebirthForUserForUserForUser(address user, uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(s.users[user].exists, "User not registered for rebirth");
+        require(slot < s.totalSlots, "Invalid slot for user rebirth");
+        require(
+            s.users[user].slotsPurchased[slot],
+            "Slot not purchased by user for rebirth"
+        );
+        _;
+    }
+
+    modifier onlyValidUserRegistrationForUserForUserForUser(address user) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(
+            !s.users[user].exists,
+            "User already registered for user registration"
+        );
+        _;
+    }
+
+    modifier onlyValidSlotForPurchaseForUserForUserForUser(uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(slot < s.totalSlots, "Invalid slot for user purchase");
+        _;
+    }
+
+    modifier onlyValidSlotForRebirthForUserForUserForUser(uint256 slot) {
+        AppStorage storage s = LibAppStorage.diamondStorage();
+        require(slot < s.totalSlots, "Invalid slot for user rebirth");
+        _;
+    }
+}

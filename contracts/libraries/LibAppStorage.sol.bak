@@ -1,0 +1,44 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+struct UserInfo {
+    address referrer;
+    bool[] slotsPurchased;
+    bool exists;
+    uint256 rebirthCount;
+    uint256 registrationTime;
+}
+
+struct AppStorage {
+    mapping(address => UserInfo) users;
+    uint256 totalSlots;
+    uint256 totalUsers;
+    uint256 totalRebirths;
+    uint256 totalReferrals;
+    uint256 totalRevenue;
+    uint256 totalSlotsPurchased;
+    uint256 totalRebirthsPerSlot; // Track rebirths per slot
+    uint256 totalRevenuePerSlot; // Track revenue per slot
+    uint256 totalReferralsPerSlot; // Track referrals per slot
+    uint256 totalRevenuePerUser; // Track revenue per user
+    uint256 totalRebirthsPerUser; // Track rebirths per user
+    uint256 totalReferralsPerUser; // Track referrals per user
+    uint256 totalRevenuePerReferrer; // Track revenue per referrer
+    uint256 totalRebirthsPerReferrer; // Track rebirths per referrer
+    uint256 totalRevenuePerSlotPerUser; // Track revenue per slot per user
+    uint256 totalRebirthsPerSlotPerUser; // Track rebirths per slot per user
+    uint256 totalReferralsPerSlotPerUser; // Track referrals per slot per user
+    // Add other shared global variables here
+}
+
+library LibAppStorage {
+    bytes32 internal constant STORAGE_SLOT =
+        keccak256("fortunitynxt.app.storage");
+
+    function diamondStorage() internal pure returns (AppStorage storage ds) {
+        bytes32 slot = STORAGE_SLOT;
+        assembly {
+            ds.slot := slot
+        }
+    }
+}

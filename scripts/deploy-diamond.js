@@ -28,6 +28,7 @@ async function main() {
     "PriceFeedFacet",
     "PurchaseFacet",
     "RegistrationFacet",
+  
     // Add more facet names if needed
   ];
 
